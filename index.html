@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Academic Nexus // ZENITH v20.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net"></script>
+    <style>
+        @import url('https://fonts.googleapis.com');
+        :root { --gold: #f3c623; --red: #ff003c; --neon: #00f3ff; }
+        body { background: #000; color: #fff; font-family: 'Space Mono', monospace; overflow: hidden; }
+
+        /* サイバーパンク・ハイエンドUI */
+        .neon-border { border: 1px solid var(--gold); box-shadow: 0 0 15px rgba(243,198,35,0.2); }
+        .post-box { 
+            background: rgba(5,5,5,0.9); border-left: 2px solid var(--gold); 
+            padding: 20px; margin-bottom: 15px; position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .post-box:hover { transform: scale(1.01); box-shadow: 0 0 25px rgba(0,243,255,0.1); border-left-color: var(--neon); }
+        .admin-box { border-left-color: var(--red); background: linear-gradient(90deg, rgba(50,0,0,0.3), transparent); }
+        
+        /* 画面制御 */
+        .screen { display: none; height: 100dvh; width: 100%; position: fixed; flex-direction: column; z-index: 50; }
+        .screen.active { display: flex; animation: slide-up 0.5s ease-out; }
+        @keyframes slide-up { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        #feed { flex: 1; overflow-y: auto; padding: 20px; mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent); }
+        .btn-apex { background: var(--gold); color: #000; font-weight: 900; letter-spacing: 2px; transition: 0.3s; cursor: pointer; }
+        .btn-apex:hover { background: #fff; box-shadow: 0 0 20px var(--gold); }
+    </style>
+</head>
+<body>
+
+    <!-- GATEWAY (Pass: neba72) -->
+    <div id="scr-1" class="screen active bg-white items-center justify-center p-10">
+        <div class="w-full max-w-md text-center">
+            <h1 class="text-7xl font-black text-black italic mb-2 tracking-tighter" style="font-family:'Orbitron'">ZENITH</h1>
+            <p class="text-[10px] text-zinc-400 font-bold mb-12 tracking-[0.5em]">SYSTEM_VERSION_20.0</p>
+            <div class="relative group">
+                <input type="password" id="gate-key" class="w-full bg-zinc-100 p-6 rounded-none text-center text-3xl font-bold text-black border-b-2 border-zinc-200 focus:border-black outline-none mb-8 transition-all" placeholder="ID_AUTH">
+                <div class="absolute bottom-0 left-0 w-0 h-1 bg-black transition-all group-focus-within:w-full"></div>
+            </div>
+            <button onclick="authGate()" class="w-full bg-black text-white p-6 font-black hover:tracking-[1em] transition-all duration-500">INITIATE</button>
+        </div>
+    </div>
+
+    <!-- MAIN INTERFACE -->
+    <div id="scr-2" class="screen">
+        <header class="h-20 border-b border-zinc-900 flex justify-between items-center px-8 bg-black/80 backdrop-blur-xl sticky top-0">
+            <div class="flex flex-col">
+                <h1 class="text-xl font-black text-[#f3c623] italic tracking-widest" style="font-family:'Orbitron'">OVERRIDE</h1>
+                <div id="signal" class="flex items-center gap-2 mt-1">
+                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping"></span>
+                    <span class="text-[7px] text-green-500 font-bold uppercase">Signal: High_Speed_Sync</span>
+                </div>
+            </div>
+            <div class="text-right">
+                <div id="peer-count" class="text-[9px] text-zinc-500 font-bold">NODES_ACTIVE: --</div>
+                <div class="text-[7px] text-zinc-700 font-mono" id="node-id">0x000000</div>
+            </div>
+        </header>
+
+        <main id="feed" class="space-y-6"></main>
+
+        <footer class="p-6 bg-gradient-to-t from-black via-black to-transparent">
+            <div class="max-w-5xl mx-auto neon-border p-1 rounded-xl bg-zinc-900/50 backdrop-blur-md">
+                <div id="reply-bar" class="hidden px-4 py-1 text-[8px] text-gold flex justify-between border-b border-zinc-800">
+                    <span id="reply-info"></span><button onclick="offReply()">CANCEL</button>
+                </div>
+                <div class="flex flex-col p-3">
+                    <textarea id="msg-input" class="w-full bg-transparent text-white text-sm h-24 outline-none resize-none px-2" placeholder="Synchronize Thoughts... (/apex for root)"></textarea>
+                    <div class="flex justify-between items-center mt-3 border-t border-zinc-800 pt-3">
+                        <div class="flex gap-6 items-center">
+                            <label class="cursor-pointer group flex items-center gap-2">
+                                <span class="text-[10px] text-zinc-500 group-hover:text-gold transition-colors">MEDIA</span>
+                                <input type="file" id="img-input" class="hidden" accept="image/*" onchange="loadImg()">
+                            </label>
+                            <span id="img-status" class="text-[8px] text-gold font-bold"></span>
+                        </div>
+                        <button id="send-btn" onclick="sync()" class="btn-apex px-10 py-3 rounded text-[10px] uppercase">Execute_Sync</button>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ROOT AUTH (Pass: admin999) -->
+    <div id="scr-3" class="screen bg-black items-center justify-center">
+        <div class="w-80 border-t-4 border-red-600 p-10 bg-zinc-950 shadow-2xl">
+            <h2 class="text-red-600 font-black text-xs tracking-widest mb-10 text-center uppercase">Root_Overseer</h2>
+            <input type="password" id="root-key" class="w-full bg-transparent border-b border-red-600 text-red-500 text-4xl text-center outline-none mb-12" placeholder="***">
+            <button onclick="authRoot()" class="w-full bg-red-600 text-white py-4 font-black hover:bg-red-400 transition-colors">VERIFY</button>
+        </div>
+    </div>
+
+    <script>
+        const _CORE = { p: "neba72", r: "admin999" };
+        let gun, db, rawImg = "", repId = "", isRoot = false;
+
+        function nav(n) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`scr-${n}`).classList.add('active');
+        }
+
+        function authGate() {
+            if (document.getElementById('gate-key').value === _CORE.p) { nav(2); run(); }
+            else { alert("AUTH_DENIED"); location.reload(); }
+        }
+
+        function run() {
+            // 世界中に分散されたリレー（学校のフィルタを貫通させるための冗長化）
+            const peers = [
+                window.location.origin + '/gun',
+                'https://gun-manhattan.herokuapp.com',
+                'https://peer.wall.org'
+            ];
+            gun = Gun({ peers });
+            db = gun.get('zenith_final_v20_stream');
+
+            db.map().on((data, id) => {
+                if (!data) { document.getElementById(id)?.remove(); return; }
+                draw(data, id);
+            });
+
+            const input = document.getElementById('msg-input');
+            input.addEventListener('input', (e) => {
+                if (e.target.value === "/apex") { e.target.value = ""; nav(3); }
+            });
+            document.getElementById('node-id').innerText = "0x" + Math.random().toString(16).slice(2, 8).toUpperCase();
+        }
+
+        function authRoot() {
+            if (document.getElementById('root-key').value === _CORE.r) { isRoot = true; nav(2); }
+            else { alert("FAIL"); }
+        }
+
+        function loadImg() {
+            const f = document.getElementById('img-input').files[0];
+            if (!f) return;
+            document.getElementById('img-status').innerText = "PROCESSING...";
+            const r = new FileReader();
+            r.onload = (e) => {
+                const i = new Image();
+                i.onload = () => {
+                    const c = document.createElement('canvas');
+                    const M = 600; // 最適な解像度
+                    let w = i.width, h = i.height;
+                    if (w > h) { if (w > M) { h *= M/w; w = M; } }
+                    else { if (h > M) { w *= M/h; h = M; } }
+                    c.width = w; c.height = h;
+                    c.getContext('2d').drawImage(i, 0, 0, w, h);
+                    rawImg = c.toDataURL('image/jpeg', 0.6);
+                    document.getElementById('img-status').innerText = "READY";
+                };
+                i.src = e.target.result;
+            };
+            r.readAsDataURL(f);
+        }
+
+        function sync() {
+            const msg = document.getElementById('msg-input').value.trim();
+            if (!msg && !rawImg) return;
+            const btn = document.getElementById('send-btn');
+            btn.disabled = true;
+
+            const id = 'Z' + Date.now() + Math.random().toString(36).slice(2, 5);
+            db.get(id).put({
+                msg: msg, img: rawImg,
+                rep: repId, root: isRoot,
+                ts: Date.now(), time: new Date().toLocaleTimeString()
+            });
+
+            document.getElementById('msg-input').value = "";
+            rawImg = ""; repId = ""; offReply();
+            document.getElementById('img-status').innerText = "";
+            btn.disabled = false;
+        }
+
+        function draw(data, id) {
+            if (document.getElementById(id)) return;
+            const f = document.getElementById('feed');
+            const d = document.createElement('div');
+            d.id = id;
+            d.className = `post-box ${data.root ? 'admin-box' : ''}`;
+            d.onclick = () => { repId = id; document.getElementById('reply-info').innerText = `REFERENCE: ${id}`; document.getElementById('reply-bar').classList.remove('hidden'); };
+            
+            d.innerHTML = `
+                <div class="flex justify-between text-[7px] font-bold opacity-30 mb-3 tracking-[0.2em]">
+                    <span>${data.root ? 'ROOT_OVERSEER' : 'NEURAL_NODE'} // ${data.time}</span>
+                    ${isRoot ? `<button onclick="db.get('${id}').put(null)" class="text-red-500 hover:text-white">TERMINATE</button>` : `<span>#${id.slice(-4)}</span>`}
+                </div>
+                ${data.rep ? `<div class="text-[8px] text-[#00f3ff] mb-2 font-bold opacity-60 italic">>> LINKED_TO: ${data.rep.slice(-4)}</div>` : ''}
+                <div class="text-[12px] leading-relaxed break-words text-zinc-100 font-sans">${data.msg || ''}</div>
+                ${data.img ? `<img src="${data.img}" class="mt-4 rounded-lg w-full border border-zinc-800 shadow-2xl transition-all duration-500 hover:brightness-110">` : ''}
+            `;
+            f.prepend(d); // 最新を上に
+        }
+
+        function offReply() { repId = ""; document.getElementById('reply-bar').classList.add('hidden'); }
+    </script>
+</body>
+</html>
