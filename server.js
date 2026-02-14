@@ -2,16 +2,17 @@ const express = require('express');
 const Gun = require('gun');
 const path = require('path');
 const app = express();
-
-// サーバーのポート設定
 const port = process.env.PORT || 3000;
 
-// index.htmlを配信
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(__dirname));
 
-const server = app.listen(port, () => {
-    console.log(`ZENITH_V20_CORE_LIVE: Port ${port}`);
+const server = app.listen(port, '0.0.0.0', () => {
+    console.log(`CORE_LIVE_AT_PORT_${port}`);
 });
 
-// Gun.jsサーバーの起動
-Gun({ web: server });
+// Gunサーバーの初期化（Renderのプロキシを通すための設定）
+Gun({ 
+    web: server,
+    file: 'db_data', // 簡易的な永続化
+    radisk: false    // 無料プランのメモリ制限対策
+});
