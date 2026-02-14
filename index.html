@@ -3,202 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Academic Nexus // ZENITH v20.0</title>
+    <title>Academic Lexicon Suite v20.2 // OVERRIDE APEX</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net"></script>
     <style>
         @import url('https://fonts.googleapis.com');
-        :root { --gold: #f3c623; --red: #ff003c; --neon: #00f3ff; }
-        body { background: #000; color: #fff; font-family: 'Space Mono', monospace; overflow: hidden; }
-
-        /* サイバーパンク・ハイエンドUI */
-        .neon-border { border: 1px solid var(--gold); box-shadow: 0 0 15px rgba(243,198,35,0.2); }
-        .post-box { 
-            background: rgba(5,5,5,0.9); border-left: 2px solid var(--gold); 
-            padding: 20px; margin-bottom: 15px; position: relative;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .post-box:hover { transform: scale(1.01); box-shadow: 0 0 25px rgba(0,243,255,0.1); border-left-color: var(--neon); }
-        .admin-box { border-left-color: var(--red); background: linear-gradient(90deg, rgba(50,0,0,0.3), transparent); }
+        :root { --gold: #f3c623; --red: #ff003c; --neon: #00f3ff; --bg: #050505; }
+        body { background: #000; color: #fff; font-family: 'Space Mono', monospace; overflow: hidden; margin: 0; }
         
-        /* 画面制御 */
-        .screen { display: none; height: 100dvh; width: 100%; position: fixed; flex-direction: column; z-index: 50; }
-        .screen.active { display: flex; animation: slide-up 0.5s ease-out; }
-        @keyframes slide-up { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* サイバーパンク・ハイエンドデザイン */
+        .glass { background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .screen { display: none; height: 100dvh; width: 100%; position: fixed; flex-direction: column; z-index: 100; }
+        .screen.active { display: flex; animation: k-fade 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes k-fade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .post-box { 
+            background: rgba(15, 15, 15, 0.9); border-left: 4px solid var(--gold); 
+            padding: 1.5rem; margin-bottom: 1rem; border-radius: 4px 16px 16px 4px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8); transition: 0.3s ease; position: relative;
+        }
+        .post-box:hover { transform: translateX(5px); border-left-color: var(--neon); }
+        .admin-mode { border-left-color: var(--red) !important; background: linear-gradient(90deg, rgba(50,0,0,0.4), #0a0a0a); }
+        
+        #feed { flex: 1; overflow-y: auto; padding: 2rem; scroll-behavior: smooth; }
+        #feed::-webkit-scrollbar { width: 3px; }
+        #feed::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
 
-        #feed { flex: 1; overflow-y: auto; padding: 20px; mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent); }
-        .btn-apex { background: var(--gold); color: #000; font-weight: 900; letter-spacing: 2px; transition: 0.3s; cursor: pointer; }
-        .btn-apex:hover { background: #fff; box-shadow: 0 0 20px var(--gold); }
+        .btn-apex { background: var(--gold); color: #000; font-weight: 900; cursor: pointer; transition: 0.3s; letter-spacing: 2px; }
+        .btn-apex:hover { background: #fff; box-shadow: 0 0 20px var(--gold); transform: translateY(-2px); }
+        .btn-apex:active { transform: translateY(1px); }
+        .glitch { text-shadow: 2px 0 var(--red), -2px 0 var(--neon); }
     </style>
 </head>
 <body>
 
-    <!-- GATEWAY (Pass: neba72) -->
+    <!-- 1: GATEWAY (Pass: neba72) - 学校フィルタ回避用偽装 -->
     <div id="scr-1" class="screen active bg-white items-center justify-center p-10">
-        <div class="w-full max-w-md text-center">
-            <h1 class="text-7xl font-black text-black italic mb-2 tracking-tighter" style="font-family:'Orbitron'">ZENITH</h1>
-            <p class="text-[10px] text-zinc-400 font-bold mb-12 tracking-[0.5em]">SYSTEM_VERSION_20.0</p>
-            <div class="relative group">
-                <input type="password" id="gate-key" class="w-full bg-zinc-100 p-6 rounded-none text-center text-3xl font-bold text-black border-b-2 border-zinc-200 focus:border-black outline-none mb-8 transition-all" placeholder="ID_AUTH">
-                <div class="absolute bottom-0 left-0 w-0 h-1 bg-black transition-all group-focus-within:w-full"></div>
-            </div>
-            <button onclick="authGate()" class="w-full bg-black text-white p-6 font-black hover:tracking-[1em] transition-all duration-500">INITIATE</button>
+        <div class="max-w-md w-full text-center">
+            <h1 class="text-5xl font-black text-black italic mb-2 tracking-tighter glitch">Constraint</h1>
+            <p class="text-[10px] text-zinc-400 font-bold mb-12 tracking-[0.5em] uppercase">Academic Lexicon Management v20.2</p>
+            <input type="password" id="gate-in" class="w-full bg-zinc-100 p-6 rounded-2xl text-center text-3xl font-bold text-black border-none outline-none mb-6 shadow-inner" placeholder="STUDENT_ID">
+            <button onclick="valGate()" class="w-full bg-black text-white p-6 rounded-2xl font-black tracking-[0.3em] shadow-2xl active:scale-95 transition-all">SIGN_IN</button>
         </div>
     </div>
 
-    <!-- MAIN INTERFACE -->
-    <div id="scr-2" class="screen">
-        <header class="h-20 border-b border-zinc-900 flex justify-between items-center px-8 bg-black/80 backdrop-blur-xl sticky top-0">
+    <!-- 2: APEX LOUNGE (Main Interface) -->
+    <div id="scr-2" class="screen bg-[#050505]">
+        <header class="h-20 border-b border-zinc-900 flex justify-between items-center px-8 glass z-50">
             <div class="flex flex-col">
-                <h1 class="text-xl font-black text-[#f3c623] italic tracking-widest" style="font-family:'Orbitron'">OVERRIDE</h1>
-                <div id="signal" class="flex items-center gap-2 mt-1">
-                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-ping"></span>
-                    <span class="text-[7px] text-green-500 font-bold uppercase">Signal: High_Speed_Sync</span>
-                </div>
+                <h1 class="text-xl font-black text-[#f3c623] italic tracking-widest" style="font-family:'Orbitron'">OVERRIDE_ZENITH</h1>
+                <div id="typing" class="text-[7px] text-green-500 font-bold opacity-0 uppercase animate-pulse">Data Incoming...</div>
             </div>
-            <div class="text-right">
-                <div id="peer-count" class="text-[9px] text-zinc-500 font-bold">NODES_ACTIVE: --</div>
-                <div class="text-[7px] text-zinc-700 font-mono" id="node-id">0x000000</div>
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <div id="status-txt" class="text-[9px] text-zinc-500 font-bold uppercase tracking-tighter">Connecting...</div>
+                    <div id="node-id" class="text-[7px] text-zinc-700 font-mono">0x000000</div>
+                </div>
+                <div id="led" class="w-3 h-3 bg-zinc-800 rounded-full transition-all duration-500"></div>
             </div>
         </header>
 
-        <main id="feed" class="space-y-6"></main>
+        <main id="feed"></main>
 
-        <footer class="p-6 bg-gradient-to-t from-black via-black to-transparent">
-            <div class="max-w-5xl mx-auto neon-border p-1 rounded-xl bg-zinc-900/50 backdrop-blur-md">
-                <div id="reply-bar" class="hidden px-4 py-1 text-[8px] text-gold flex justify-between border-b border-zinc-800">
-                    <span id="reply-info"></span><button onclick="offReply()">CANCEL</button>
+        <footer class="p-6 bg-gradient-to-t from-black via-black/90 to-transparent z-50">
+            <div class="max-w-5xl mx-auto glass p-5 rounded-3xl border border-zinc-800 shadow-2xl">
+                <div id="reply-box" class="hidden mb-3 text-[10px] text-gold flex justify-between items-center bg-gold/10 p-2 rounded-lg border border-gold/20">
+                    <span id="reply-info"></span><button onclick="offReply()" class="hover:text-white">✕</button>
                 </div>
-                <div class="flex flex-col p-3">
-                    <textarea id="msg-input" class="w-full bg-transparent text-white text-sm h-24 outline-none resize-none px-2" placeholder="Synchronize Thoughts... (/apex for root)"></textarea>
-                    <div class="flex justify-between items-center mt-3 border-t border-zinc-800 pt-3">
-                        <div class="flex gap-6 items-center">
-                            <label class="cursor-pointer group flex items-center gap-2">
-                                <span class="text-[10px] text-zinc-500 group-hover:text-gold transition-colors">MEDIA</span>
-                                <input type="file" id="img-input" class="hidden" accept="image/*" onchange="loadImg()">
-                            </label>
-                            <span id="img-status" class="text-[8px] text-gold font-bold"></span>
-                        </div>
-                        <button id="send-btn" onclick="sync()" class="btn-apex px-10 py-3 rounded text-[10px] uppercase">Execute_Sync</button>
+                <textarea id="msg-in" class="w-full bg-transparent text-white text-base h-24 outline-none resize-none p-2" placeholder="Synchronize thought... (/apex for root)"></textarea>
+                <div class="flex justify-between items-center mt-4 pt-4 border-t border-zinc-800/50">
+                    <div class="flex gap-6 items-center">
+                        <label class="cursor-pointer group flex flex-col items-center">
+                            <svg class="w-6 h-6 text-zinc-500 group-hover:text-gold transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-width="2"></path></svg>
+                            <span id="img-label" class="text-[8px] text-zinc-600 font-bold mt-1 uppercase">Media</span>
+                            <input type="file" id="file-in" class="hidden" accept="image/*" onchange="loadImg()">
+                        </label>
                     </div>
+                    <button id="send-btn" onclick="sync()" class="btn-apex px-12 py-4 rounded-2xl text-xs uppercase shadow-xl">Synchronize</button>
                 </div>
             </div>
         </footer>
     </div>
 
-    <!-- ROOT AUTH (Pass: admin999) -->
+    <!-- 3: ROOT OVERSEER (Pass: admin999) -->
     <div id="scr-3" class="screen bg-black items-center justify-center">
-        <div class="w-80 border-t-4 border-red-600 p-10 bg-zinc-950 shadow-2xl">
-            <h2 class="text-red-600 font-black text-xs tracking-widest mb-10 text-center uppercase">Root_Overseer</h2>
-            <input type="password" id="root-key" class="w-full bg-transparent border-b border-red-600 text-red-500 text-4xl text-center outline-none mb-12" placeholder="***">
-            <button onclick="authRoot()" class="w-full bg-red-600 text-white py-4 font-black hover:bg-red-400 transition-colors">VERIFY</button>
+        <div class="w-full max-w-sm border-2 border-red-900 p-12 glass text-center">
+            <h2 class="text-red-600 font-black text-xs mb-10 tracking-[0.8em] uppercase">Overseer_Auth</h2>
+            <input type="password" id="root-key" class="w-full bg-transparent border-b-2 border-red-900 text-red-500 text-5xl text-center outline-none mb-12 font-bold" placeholder="ROOT">
+            <div class="flex gap-4">
+                <button onclick="nav(2)" class="flex-1 text-zinc-600 text-xs font-bold uppercase hover:text-white">Abort</button>
+                <button onclick="authRoot()" class="flex-[2] bg-red-900 text-white py-5 font-black tracking-widest active:scale-95 transition-all">VERIFY</button>
+            </div>
         </div>
     </div>
 
     <script>
-        const _CORE = { p: "neba72", r: "admin999" };
-        let gun, db, rawImg = "", repId = "", isRoot = false;
+        // --- 究極のコア・ロジック ---
+        const _CFG = { p: "neba72", r: "admin999" };
+        let gun, db, imgRaw = "", repId = "", isRoot = false;
 
         function nav(n) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(`scr-${n}`).classList.add('active');
         }
 
-        function authGate() {
-            if (document.getElementById('gate-key').value === _CORE.p) { nav(2); run(); }
-            else { alert("AUTH_DENIED"); location.reload(); }
+        // ゲート通過
+        function valGate() {
+            if (document.getElementById('gate-in').value === _CFG.p) {
+                nav(2); boot();
+            } else { alert("ACCESS_DENIED"); location.reload(); }
         }
 
-        function run() {
-            // 世界中に分散されたリレー（学校のフィルタを貫通させるための冗長化）
+        function boot() {
+            // Renderの自前リレーを優先、予備として世界各地のピアを登録
             const peers = [
                 window.location.origin + '/gun',
                 'https://gun-manhattan.herokuapp.com',
                 'https://peer.wall.org'
             ];
-            gun = Gun({ peers });
-            db = gun.get('zenith_final_v20_stream');
+            gun = Gun({ peers, localStorage: true });
+            db = gun.get('apex_v20_ultimate_override');
 
+            // 同期開始
             db.map().on((data, id) => {
                 if (!data) { document.getElementById(id)?.remove(); return; }
-                draw(data, id);
+                render(data, id);
             });
 
-            const input = document.getElementById('msg-input');
-            input.addEventListener('input', (e) => {
+            // ステータス更新
+            document.getElementById('status-txt').innerText = "Signal_Stable";
+            document.getElementById('led').className = "w-3 h-3 bg-green-500 rounded-full shadow-[0_0_15px_#22c55e]";
+            document.getElementById('node-id').innerText = "NODE_" + Math.random().toString(16).slice(2, 8).toUpperCase();
+
+            // コマンド監視
+            document.getElementById('msg-in').addEventListener('input', (e) => {
                 if (e.target.value === "/apex") { e.target.value = ""; nav(3); }
+                document.getElementById('typing').style.opacity = e.target.value.length > 0 ? 1 : 0;
             });
-            document.getElementById('node-id').innerText = "0x" + Math.random().toString(16).slice(2, 8).toUpperCase();
         }
 
         function authRoot() {
-            if (document.getElementById('root-key').value === _CORE.r) { isRoot = true; nav(2); }
-            else { alert("FAIL"); }
+            if (document.getElementById('root-key').value === _CFG.r) {
+                isRoot = true; nav(2); alert("ROOT_ACCESS_GRANTED");
+            } else { alert("DENIED"); }
         }
 
+        // 画像超圧縮エンジン（学校フィルタと容量制限の同時突破）
         function loadImg() {
-            const f = document.getElementById('img-input').files[0];
+            const f = document.getElementById('file-in').files[0];
             if (!f) return;
-            document.getElementById('img-status').innerText = "PROCESSING...";
-            const r = new FileReader();
-            r.onload = (e) => {
-                const i = new Image();
-                i.onload = () => {
-                    const c = document.createElement('canvas');
-                    const M = 600; // 最適な解像度
-                    let w = i.width, h = i.height;
-                    if (w > h) { if (w > M) { h *= M/w; w = M; } }
-                    else { if (h > M) { w *= M/h; h = M; } }
-                    c.width = w; c.height = h;
-                    c.getContext('2d').drawImage(i, 0, 0, w, h);
-                    rawImg = c.toDataURL('image/jpeg', 0.6);
-                    document.getElementById('img-status').innerText = "READY";
+            document.getElementById('img-label').innerText = "COMPRESSING...";
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX = 500; // 最適な解像度
+                    let w = img.width, h = img.height;
+                    if (w > h) { if (w > MAX) { h *= MAX/w; w = MAX; } }
+                    else { if (h > MAX) { w *= MAX/h; h = MAX; } }
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    imgRaw = canvas.toDataURL('image/jpeg', 0.4); // 40%圧縮
+                    document.getElementById('img-label').innerText = "READY";
+                    document.getElementById('img-label').classList.add('text-gold');
                 };
-                i.src = e.target.result;
+                img.src = e.target.result;
             };
-            r.readAsDataURL(f);
+            reader.readAsDataURL(f);
         }
 
+        // 送信（無制限・即時同期）
         function sync() {
-            const msg = document.getElementById('msg-input').value.trim();
-            if (!msg && !rawImg) return;
+            const msgIn = document.getElementById('msg-in');
             const btn = document.getElementById('send-btn');
+            if (!msgIn.value.trim() && !imgRaw) return;
+
             btn.disabled = true;
+            btn.innerText = "SYNCING...";
 
             const id = 'Z' + Date.now() + Math.random().toString(36).slice(2, 5);
             db.get(id).put({
-                msg: msg, img: rawImg,
-                rep: repId, root: isRoot,
-                ts: Date.now(), time: new Date().toLocaleTimeString()
+                msg: msgIn.value,
+                img: imgRaw,
+                rep: repId,
+                root: isRoot,
+                ts: Date.now(),
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }, (ack) => {
+                // 送信完了後のリセット
+                msgIn.value = "";
+                imgRaw = ""; repId = "";
+                document.getElementById('img-label').innerText = "MEDIA";
+                document.getElementById('img-label').classList.remove('text-gold');
+                offReply();
+                btn.disabled = false;
+                btn.innerText = "Synchronize";
+                document.getElementById('feed').scrollTop = 0;
             });
-
-            document.getElementById('msg-input').value = "";
-            rawImg = ""; repId = ""; offReply();
-            document.getElementById('img-status').innerText = "";
-            btn.disabled = false;
         }
 
-        function draw(data, id) {
+        function render(data, id) {
             if (document.getElementById(id)) return;
             const f = document.getElementById('feed');
             const d = document.createElement('div');
             d.id = id;
-            d.className = `post-box ${data.root ? 'admin-box' : ''}`;
-            d.onclick = () => { repId = id; document.getElementById('reply-info').innerText = `REFERENCE: ${id}`; document.getElementById('reply-bar').classList.remove('hidden'); };
+            d.className = `post-box ${data.root ? 'admin-mode' : ''} animate-in fade-in slide-in-from-bottom-4 duration-500`;
+            d.onclick = () => { repId = id; document.getElementById('reply-info').innerText = `RE_REFERENCE: ${id.slice(-4)}`; document.getElementById('reply-box').classList.remove('hidden'); document.getElementById('msg-in').focus(); };
             
             d.innerHTML = `
-                <div class="flex justify-between text-[7px] font-bold opacity-30 mb-3 tracking-[0.2em]">
-                    <span>${data.root ? 'ROOT_OVERSEER' : 'NEURAL_NODE'} // ${data.time}</span>
-                    ${isRoot ? `<button onclick="db.get('${id}').put(null)" class="text-red-500 hover:text-white">TERMINATE</button>` : `<span>#${id.slice(-4)}</span>`}
+                <div class="flex justify-between items-center text-[8px] font-bold mb-4 opacity-40 uppercase tracking-widest">
+                    <span>${data.root ? '★ ROOT_OVERSEER' : 'SIGNAL_NODE'} // ${data.time}</span>
+                    ${isRoot ? `<button onclick="db.get('${id}').put(null)" class="text-red-500 hover:text-white transition-colors">TERMINATE</button>` : `<span>#${id.slice(-4)}</span>`}
                 </div>
-                ${data.rep ? `<div class="text-[8px] text-[#00f3ff] mb-2 font-bold opacity-60 italic">>> LINKED_TO: ${data.rep.slice(-4)}</div>` : ''}
-                <div class="text-[12px] leading-relaxed break-words text-zinc-100 font-sans">${data.msg || ''}</div>
-                ${data.img ? `<img src="${data.img}" class="mt-4 rounded-lg w-full border border-zinc-800 shadow-2xl transition-all duration-500 hover:brightness-110">` : ''}
+                ${data.rep ? `<div class="text-[8px] text-neon mb-2 font-bold opacity-60">>> REF: ${data.rep.slice(-4)}</div>` : ''}
+                <div class="text-[13px] leading-relaxed break-words whitespace-pre-wrap font-sans text-zinc-100">${escapeHtml(data.msg || '')}</div>
+                ${data.img ? `<img src="${data.img}" class="mt-4 rounded-xl w-full border border-zinc-800 shadow-2xl transition-all hover:scale-[1.01]" loading="lazy">` : ''}
+                <div class="mt-4 flex gap-4 opacity-10 hover:opacity-100 transition-opacity">
+                    <span class="text-[8px] cursor-pointer">REACT:🔥</span>
+                    <span class="text-[8px] cursor-pointer">REACT:👁️</span>
+                </div>
             `;
-            f.prepend(d); // 最新を上に
+            
+            // 最新を一番上へ挿入
+            const children = Array.from(f.children);
+            const ref = children.find(c => c.dataset.ts < data.ts);
+            if (ref) f.insertBefore(d, ref); else f.appendChild(d);
+            d.dataset.ts = data.ts;
         }
 
-        function offReply() { repId = ""; document.getElementById('reply-bar').classList.add('hidden'); }
+        function offReply() { repId = ""; document.getElementById('reply-box').classList.add('hidden'); }
+        function escapeHtml(s) { return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
     </script>
 </body>
 </html>
